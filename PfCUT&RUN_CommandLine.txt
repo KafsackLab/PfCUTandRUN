@@ -1,0 +1,241 @@
+#required programs (installed via bioconda): SRA tools 2.11.0, trimmomatic 0.39, bwa 0.7.17-r1188, samtools 1.15 , macs2 2.2.7.1
+
+# place read files (fastq.gz) into ./reads
+mkdir reads
+mv *fastq.gz ./reads
+
+mkdir ./genome/
+wget https://plasmodb.org/common/downloads/Current_Release/Pfalciparum3D7/fasta/data/PlasmoDB-58_Pfalciparum3D7_Genome.fasta 
+wget https://plasmodb.org/common/downloads/Current_Release/Pfalciparum3D7/gff/data/PlasmoDB-58_Pfalciparum3D7.gff
+mv PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./genome
+mv PlasmoDB-58_Pfalciparum3D7.gff ./genome
+bwa index ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta
+
+fastqc ../reads/*fastq.gz
+
+mkdir ./bams
+mkdir ./paired.reads=
+mkdir ./singleSamplePeaks
+mkdir ./singleSamplePeaks/tdfs/
+mkdir ./singleSamplePeaks/SPMR
+
+########################################
+#### read trimming with trimmomatic ####
+
+#Sample 1
+trimmomatic PE -threads 15 ./reads/NF54_plus_M_plus_CIgG_S8_L001_R1_001.fastq.gz ./reads/NF54_plus_M_plus_CIgG_S8_L001_R2_001.fastq.gz ./paired.reads/X1.S8.X1.NF54.MC.IgG.E_R1.paired.fq.gz ./X1.S8.X1.NF54.MC.IgG.E_R1.unpaired.fastq.gz ./paired.reads/X1.S8.X1.NF54.MC.IgG.E_R2.paired.fq.gz ./X1.S8.X1.NF54.MC.IgG.E_R2.unpaired.fastq.gz ILLUMINACLIP:/home/chantal/miniconda3/share/trimmomatic-0.39-2/adapters/TruSeq3-PE.fa:2:30:10:2:keepBothReads LEADING:3 TRAILING:3 MINLEN:30
+trimmomatic PE -threads 15 ./reads/NF54_plus_M_plus_CRb-H3K9me3_S9_L001_R1_001.fastq.gz ./reads/NF54_plus_M_plus_CRb-H3K9me3_S9_L001_R2_001.fastq.gz ./paired.reads/X1.S9.X1.NF54.MC.K9.E_R1.paired.fq.gz ./X1.S9.X1.NF54.MC.K9.E_R1.unpaired.fastq.gz ./paired.reads/X1.S9.X1.NF54.MC.K9.E_R2.paired.fq.gz ./X1.S9.X1.NF54.MC.K9.E_R2.unpaired.fastq.gz ILLUMINACLIP:/home/chantal/miniconda3/share/trimmomatic-0.39-2/adapters/TruSeq3-PE.fa:2:30:10:2:keepBothReads LEADING:3 TRAILING:3 MINLEN:30
+trimmomatic PE -threads 15 ./reads/NF54_plus_M_plus_CRb-H3K4me3_S10_L001_R1_001.fastq.gz ./reads/NF54_plus_M_plus_CRb-H3K4me3_S10_L001_R2_001.fastq.gz ./paired.reads/X1.S10.X1.NF54.MC.K4.E_R1.paired.fq.gz ./X1.S10.X1.NF54.MC.K4.E_R1.unpaired.fastq.gz ./paired.reads/X1.S10.X1.NF54.MC.K4.E_R2.paired.fq.gz ./X1.S10.X1.NF54.MC.K4.E_R2.unpaired.fastq.gz ILLUMINACLIP:/home/chantal/miniconda3/share/trimmomatic-0.39-2/adapters/TruSeq3-PE.fa:2:30:10:2:keepBothReads LEADING:3 TRAILING:3 MINLEN:30
+
+#Sample 2
+trimmomatic PE -threads 15 ./reads/NF54_plus_M_plus_CIgG_S17_L001_R1_001.fastq.gz ./reads/NF54_plus_M_plus_CIgG_S17_L001_R2_001.fastq.gz ./paired.reads/X1.S17.X1.NF54.MC.IgG.F_R1.paired.fq.gz ./X1.S17.X1.NF54.MC.IgG.F_R1.unpaired.fastq.gz ./paired.reads/X1.S17.X1.NF54.MC.IgG.F_R2.paired.fq.gz ./X1.S17.X1.NF54.MC.IgG.F_R2.unpaired.fastq.gz ILLUMINACLIP:/home/chantal/miniconda3/share/trimmomatic-0.39-2/adapters/TruSeq3-PE.fa:2:30:10:2:keepBothReads LEADING:3 TRAILING:3 MINLEN:30
+trimmomatic PE -threads 15 ./reads/NF54_plus_M_plus_CRb-H3K9me3_S18_L001_R1_001.fastq.gz ./reads/NF54_plus_M_plus_CRb-H3K9me3_S18_L001_R2_001.fastq.gz ./paired.reads/X1.S18.X1.NF54.MC.K9.F_R1.paired.fq.gz ./X1.S18.X1.NF54.MC.K9.F_R1.unpaired.fastq.gz ./paired.reads/X1.S18.X1.NF54.MC.K9.F_R2.paired.fq.gz ./X1.S18.X1.NF54.MC.K9.F_R2.unpaired.fastq.gz ILLUMINACLIP:/home/chantal/miniconda3/share/trimmomatic-0.39-2/adapters/TruSeq3-PE.fa:2:30:10:2:keepBothReads LEADING:3 TRAILING:3 MINLEN:30
+trimmomatic PE -threads 15 ./reads/NF54_plus_M_plus_CRb-H3K4me3_S19_L001_R1_001.fastq.gz ./reads/NF54_plus_M_plus_CRb-H3K4me3_S19_L001_R2_001.fastq.gz ./paired.reads/X1.S19.X1.NF54.MC.K4.F_R1.paired.fq.gz ./X1.S19.X1.NF54.MC.K4.F_R1.unpaired.fastq.gz ./paired.reads/X1.S19.X1.NF54.MC.K4.F_R2.paired.fq.gz ./X1.S19.X1.NF54.MC.K4.F_R2.unpaired.fastq.gz ILLUMINACLIP:/home/chantal/miniconda3/share/trimmomatic-0.39-2/adapters/TruSeq3-PE.fa:2:30:10:2:keepBothReads LEADING:3 TRAILING:3 MINLEN:30
+
+#Sample 3
+trimmomatic PE -threads 15 ./reads/NF54_plus_M_plus_CIgG_S25_L001_R1_001.fastq.gz ./reads/NF54_plus_M_plus_CIgG_S25_L001_R2_001.fastq.gz ./paired.reads/X1.S25.X1.NF54.MC.IgG.G_R1.paired.fq.gz ./X1.S25.X1.NF54.MC.IgG.G_R1.unpaired.fastq.gz ./paired.reads/X1.S25.X1.NF54.MC.IgG.G_R2.paired.fq.gz ./X1.S25.X1.NF54.MC.IgG.G_R2.unpaired.fastq.gz ILLUMINACLIP:/home/chantal/miniconda3/share/trimmomatic-0.39-2/adapters/TruSeq3-PE.fa:2:30:10:2:keepBothReads LEADING:3 TRAILING:3 MINLEN:30
+trimmomatic PE -threads 15 ./reads/NF54_plus_M_plus_CRb-H3K9me3_S26_L001_R1_001.fastq.gz ./reads/NF54_plus_M_plus_CRb-H3K9me3_S26_L001_R2_001.fastq.gz ./paired.reads/X1.S26.X1.NF54.MC.K9.G_R1.paired.fq.gz ./X1.S26.X1.NF54.MC.K9.G_R1.unpaired.fastq.gz ./paired.reads/X1.S26.X1.NF54.MC.K9.G_R2.paired.fq.gz ./X1.S26.X1.NF54.MC.K9.G_R2.unpaired.fastq.gz ILLUMINACLIP:/home/chantal/miniconda3/share/trimmomatic-0.39-2/adapters/TruSeq3-PE.fa:2:30:10:2:keepBothReads LEADING:3 TRAILING:3 MINLEN:30
+trimmomatic PE -threads 15 ./reads/NF54_plus_M_plus_CRb-H3K4me3_S27_L001_R1_001.fastq.gz ./reads/NF54_plus_M_plus_CRb-H3K4me3_S27_L001_R2_001.fastq.gz ./paired.reads/X1.S27.X1.NF54.MC.K4.G_R1.paired.fq.gz ./X1.S27.X1.NF54.MC.K4.G_R1.unpaired.fastq.gz ./paired.reads/X1.S27.X1.NF54.MC.K4.G_R2.paired.fq.gz ./X1.S27.X1.NF54.MC.K4.G_R2.unpaired.fastq.gz ILLUMINACLIP:/home/chantal/miniconda3/share/trimmomatic-0.39-2/adapters/TruSeq3-PE.fa:2:30:10:2:keepBothReads LEADING:3 TRAILING:3 MINLEN:30
+
+#Sample 4
+trimmomatic PE -threads 15 ./reads/NF54_plus_M_plus_CIgG_S1_L001_R1_001.fastq.gz ./reads/NF54_plus_M_plus_CIgG_S1_L001_R2_001.fastq.gz ./paired.reads/X1.S1.X1.NF54.MC.IgG.A_R1.paired.fq.gz ./X1.S1.X1.NF54.MC.IgG.A_R1.unpaired.fastq.gz ./paired.reads/X1.S1.X1.NF54.MC.IgG.A_R2.paired.fq.gz ./X1.S1.X1.NF54.MC.IgG.A_R2.unpaired.fastq.gz ILLUMINACLIP:/home/chantal/miniconda3/share/trimmomatic-0.39-2/adapters/TruSeq3-PE.fa:2:30:10:2:keepBothReads LEADING:3 TRAILING:3 MINLEN:30
+trimmomatic PE -threads 15 ./reads/NF54_plus_M_plus_CRb-H3K9me3_S2_L001_R1_001.fastq.gz ./reads/NF54_plus_M_plus_CRb-H3K9me3_S2_L001_R2_001.fastq.gz ./paired.reads/X1.S2.X1.NF54.MC.K9.A_R1.paired.fq.gz ./X1.S2.X1.NF54.MC.K9.A_R1.unpaired.fq.gz ./paired.reads/X1.S2.X1.NF54.MC.K9.A_R2.paired.fq.gz ./X1.S2.X1.NF54.MC.K9.A_R2.unpaired.fq.gz ILLUMINACLIP:/home/chantal/miniconda3/share/trimmomatic-0.39-2/adapters/TruSeq3-PE.fa:2:30:10:2:keepBothReads LEADING:3 TRAILING:3 MINLEN:30
+
+rm *unpaired*
+
+fastqc ../paired_reads/*fq.gz
+
+#######################################
+#### mapping paired reads with BWA ####
+
+#Sample 1
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:X1.S8.X1.NF54.MC.IgG.E\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/X1.S8.X1.NF54.MC.IgG.E_R1.paired.fq.gz ./paired.reads/X1.S8.X1.NF54.MC.IgG.E_R2.paired.fq.gz | samtools view -hbf 2 - | samtools sort --threads 5 -n -O BAM -o ./bams/X1.S8.X1.NF54.MC.IgG.E.bam &
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:X1.S9.X1.NF54.MC.K9.E\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/X1.S9.X1.NF54.MC.K9.E_R1.paired.fq.gz ./paired.reads/X1.S9.X1.NF54.MC.K9.E_R2.paired.fq.gz | samtools view -hbf 2 - | samtools sort --threads 5 -n -O BAM -o ./bams/X1.S9.X1.NF54.MC.K9.E.bam &
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:X1.S10.X1.NF54.MC.K9.E\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/X1.S10.X1.NF54.MC.K4.E_R1.paired.fq.gz ./paired.reads/X1.S10.X1.NF54.MC.K4.E_R2.paired.fq.gz | samtools view -hbf 2 - | samtools sort --threads 5 -n -O BAM -o ./bams/X1.S10.X1.NF54.MC.K4.E.bam &
+
+#Sample 2
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:X1.S17.X1.NF54.MC.IgG.A\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/X1.S17.X1.NF54.MC.IgG.F_R1.paired.fq.gz ./paired.reads/X1.S17.X1.NF54.MC.IgG.F_R2.paired.fq.gz | samtools view -hbf 2 - | samtools sort --threads 5 -n -O BAM -o ./bams/X1.S17.X1.NF54.MC.IgG.F.bam &
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:X1.S18.X1.NF54.MC.K9.A\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/X1.S18.X1.NF54.MC.K9.F_R1.paired.fq.gz ./paired.reads/X1.S18.X1.NF54.MC.K9.F_R2.paired.fq.gz | samtools view -hbf 2 - | samtools sort --threads 5 -n -O BAM -o ./bams/X1.S18.X1.NF54.MC.K9.F.bam &
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:X1.S19.X1.NF54.MC.K9.A\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/X1.S19.X1.NF54.MC.K4.F_R1.paired.fq.gz ./paired.reads/X1.S19.X1.NF54.MC.K4.F_R2.paired.fq.gz | samtools view -hbf 2 - | samtools sort --threads 5 -n -O BAM -o ./bams/X1.S19.X1.NF54.MC.K4.F.bam   &  	
+
+#Sample 3
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:X1.S25.X1.NF54.MC.IgG.A\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/X1.S25.X1.NF54.MC.IgG.G_R1.paired.fq.gz ./paired.reads/X1.S25.X1.NF54.MC.IgG.G_R2.paired.fq.gz | samtools view -hbf 2 - | samtools sort --threads 5 -n -O BAM -o ./bams/X1.S25.X1.NF54.MC.IgG.G.bam &
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:X1.S26.X1.NF54.MC.K9.A\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/X1.S26.X1.NF54.MC.K9.G_R1.paired.fq.gz ./paired.reads/X1.S26.X1.NF54.MC.K9.G_R2.paired.fq.gz | samtools view -hbf 2 - | samtools sort --threads 5 -n -O BAM -o ./bams/X1.S26.X1.NF54.MC.K9.G.bam &
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:X1.S27.X1.NF54.MC.K9.A\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/X1.S27.X1.NF54.MC.K4.G_R1.paired.fq.gz ./paired.reads/X1.S27.X1.NF54.MC.K4.G_R2.paired.fq.gz | samtools view -hbf 2 - | samtools sort --threads 5 -n -O BAM -o ./bams/X1.S27.X1.NF54.MC.K4.G.bam   &  	
+
+#Sample 4
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:X1.S1.X1.NF54.MC.IgG.A\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/X1.S1.X1.NF54.MC.IgG.A_R1.paired.fq.gz ./paired.reads/X1.S1.X1.NF54.MC.IgG.A_R2.paired.fq.gz | samtools view -hbf 2 - | samtools sort --threads 5 -n -O BAM -o ./bams/X1.S1.X1.NF54.MC.IgG.A.bam &
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:X1.S2.X1.NF54.MC.K9.A\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/X1.S2.X1.NF54.MC.K9.A_R1.paired.fq.gz ./paired.reads/X1.S2.X1.NF54.MC.K9.A_R2.paired.fq.gz | samtools view -hbf 2 - | samtools sort --threads 5 -n -O BAM -o ./bams/X1.S2.X1.NF54.MC.K9.A.bam &
+
+###############################################################
+### calculate enrichment (both probability and fold-change) ###
+
+#sample 1 H3K9
+macs2 callpeak -t ./bams/X1.S9.X1.NF54.MC.K9.E.bam -c ./bams/X1.S8.X1.NF54.MC.IgG.E.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks -n X1.S9.X1.NF54.MC.K9.E 
+macs2 bdgcmp -t ./singleSamplePeaks/X1.S9.X1.NF54.MC.K9.E_treat_pileup.bdg -c ./singleSamplePeaks/X1.S9.X1.NF54.MC.K9.E_control_lambda.bdg -m ppois -o ./singleSamplePeaks/X1.S9.X1.NF54.MC.K9.E_ppois_comp.bdg
+macs2 callpeak -t ./bams/X1.S9.X1.NF54.MC.K9.E.bam -c ./bams/X1.S8.X1.NF54.MC.IgG.E.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n X1.S9.X1.NF54.MC.K9.E_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/X1.S9.X1.NF54.MC.K9.E_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/X1.S9.X1.NF54.MC.K9.E_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/X1.S9.X1.NF54.MC.K9.E_SPMR_FE_comp.bdg
+
+sort -k1,1 -k2,2n  ./singleSamplePeaks/X1.S9.X1.NF54.MC.K9.E_ppois_comp.bdg > ./singleSamplePeaks/X1.S9.X1.NF54.MC.K9.EP_ppois_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/X1.S9.X1.NF54.MC.K9.EP_ppois_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/X1.S9.X1.NF54.MC.K9.E_ppois.bw
+sort -k1,1 -k2,2n  ./singleSamplePeaks/SPMR/X1.S9.X1.NF54.MC.K9.E_SPMR_FE_comp.bdg > ./singleSamplePeaks/SPMR/X1.S9.X1.NF54.MC.K9.E_SPMR_FE_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/SPMR/X1.S9.X1.NF54.MC.K9.E_SPMR_FE_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/SPMR/X1.S9.X1.NF54.MC.K9.E_SPMR_FE_comp.bw
+
+#sample 1 H3K4
+macs2 callpeak -t ./bams/X1.S10.X1.NF54.MC.K4.E.bam -c ./bams/X1.S8.X1.NF54.MC.IgG.E.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks -n X1.S10.X1.NF54.MC.K4.E
+macs2 bdgcmp -t ./singleSamplePeaks/X1.S10.X1.NF54.MC.K4.E_treat_pileup.bdg -c ./singleSamplePeaks/X1.S10.X1.NF54.MC.K4.E_control_lambda.bdg -m ppois -o ./singleSamplePeaks/X1.S10.X1.NF54.MC.K4.E_ppois_comp.bdg
+macs2 callpeak -t ./bams/X1.S10.X1.NF54.MC.K4.E.bam -c ./bams/X1.S8.X1.NF54.MC.IgG.E.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n X1.S10.X1.NF54.MC.K4.E_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/X1.S10.X1.NF54.MC.K4.E_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/X1.S10.X1.NF54.MC.K4.E_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/X1.S10.X1.NF54.MC.K4.E_SPMR_FE_comp.bdg
+
+sort -k1,1 -k2,2n  ./singleSamplePeaks/X1.S10.X1.NF54.MC.K4.E_ppois_comp.bdg > ./singleSamplePeaks/X1.S10.X1.NF54.MC.K4.EP_ppois_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/X1.S10.X1.NF54.MC.K4.EP_ppois_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/X1.S10.X1.NF54.MC.K4.E_ppois.bw
+sort -k1,1 -k2,2n  ./singleSamplePeaks/SPMR/X1.S10.X1.NF54.MC.K4.E_SPMR_FE_comp.bdg > ./singleSamplePeaks/SPMR/X1.S10.X1.NF54.MC.K4.E_SPMR_FE_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/SPMR/X1.S10.X1.NF54.MC.K4.E_SPMR_FE_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/SPMR/X1.S10.X1.NF54.MC.K4.E_SPMR_FE_comp.bw
+
+#sample 2 H3K9
+macs2 callpeak -t ./bams/X1.S18.X1.NF54.MC.K9.F.bam -c ./bams/X1.S17.X1.NF54.MC.IgG.F.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks -n X1.S18.X1.NF54.MC.K9.F 
+macs2 bdgcmp -t ./singleSamplePeaks/X1.S18.X1.NF54.MC.K9.F_treat_pileup.bdg -c ./singleSamplePeaks/X1.S18.X1.NF54.MC.K9.F_control_lambda.bdg -m ppois -o ./singleSamplePeaks/X1.S18.X1.NF54.MC.K9.F_ppois_comp.bdg
+macs2 callpeak -t ./bams/X1.S18.X1.NF54.MC.K9.F.bam -c ./bams/X1.S17.X1.NF54.MC.IgG.F.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n X1.S18.X1.NF54.MC.K9.F_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/X1.S18.X1.NF54.MC.K9.F_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/X1.S18.X1.NF54.MC.K9.F_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/X1.S18.X1.NF54.MC.K9.F_SPMR_FE_comp.bdg
+
+sort -k1,1 -k2,2n  ./singleSamplePeaks/X1.S18.X1.NF54.MC.K9.F_ppois_comp.bdg > ./singleSamplePeaks/X1.S18.X1.NF54.MC.K9.FP_ppois_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/X1.S18.X1.NF54.MC.K9.FP_ppois_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/X1.S18.X1.NF54.MC.K9.F_ppois.bw
+sort -k1,1 -k2,2n  ./singleSamplePeaks/SPMR/X1.S18.X1.NF54.MC.K9.F_SPMR_FE_comp.bdg > ./singleSamplePeaks/SPMR/X1.S18.X1.NF54.MC.K9.F_SPMR_FE_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/SPMR/X1.S18.X1.NF54.MC.K9.F_SPMR_FE_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/SPMR/X1.S18.X1.NF54.MC.K9.F_SPMR_FE_comp.bw
+
+#sample 2 H3K4
+macs2 callpeak -t ./bams/X1.S19.X1.NF54.MC.K4.F.bam -c ./bams/X1.S17.X1.NF54.MC.IgG.F.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks -n X1.S19.X1.NF54.MC.K4.F 
+macs2 bdgcmp -t ./singleSamplePeaks/X1.S19.X1.NF54.MC.K4.F_treat_pileup.bdg -c ./singleSamplePeaks/X1.S19.X1.NF54.MC.K4.F_control_lambda.bdg -m ppois -o ./singleSamplePeaks/X1.S19.X1.NF54.MC.K4.F_ppois_comp.bdg
+macs2 callpeak -t ./bams/X1.S19.X1.NF54.MC.K4.F.bam -c ./bams/X1.S17.X1.NF54.MC.IgG.F.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n X1.S19.X1.NF54.MC.K4.F_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/X1.S19.X1.NF54.MC.K4.F_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/X1.S19.X1.NF54.MC.K4.F_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/X1.S19.X1.NF54.MC.K4.F_SPMR_FE_comp.bdg
+
+sort -k1,1 -k2,2n  ./singleSamplePeaks/X1.S19.X1.NF54.MC.K4.F_ppois_comp.bdg > ./singleSamplePeaks/X1.S19.X1.NF54.MC.K4.FP_ppois_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/X1.S19.X1.NF54.MC.K4.FP_ppois_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/X1.S19.X1.NF54.MC.K4.F_ppois.bw
+sort -k1,1 -k2,2n  ./singleSamplePeaks/SPMR/X1.S19.X1.NF54.MC.K4.F_SPMR_FE_comp.bdg > ./singleSamplePeaks/SPMR/X1.S19.X1.NF54.MC.K4.F_SPMR_FE_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/SPMR/X1.S19.X1.NF54.MC.K4.F_SPMR_FE_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/SPMR/X1.S19.X1.NF54.MC.K4.F_SPMR_FE_comp.bw
+
+#sample 3 H3K9
+macs2 callpeak -t ./bams/X1.S26.X1.NF54.MC.K9.G.bam -c ./bams/X1.S25.X1.NF54.MC.IgG.G.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks -n X1.S26.X1.NF54.MC.K9.G 
+macs2 bdgcmp -t ./singleSamplePeaks/X1.S26.X1.NF54.MC.K9.G_treat_pileup.bdg -c ./singleSamplePeaks/X1.S26.X1.NF54.MC.K9.G_control_lambda.bdg -m ppois -o ./singleSamplePeaks/X1.S26.X1.NF54.MC.K9.G_ppois_comp.bdg
+macs2 callpeak -t ./bams/X1.S26.X1.NF54.MC.K9.G.bam -c ./bams/X1.S25.X1.NF54.MC.IgG.G.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n X1.S26.X1.NF54.MC.K9.G_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/X1.S26.X1.NF54.MC.K9.G_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/X1.S26.X1.NF54.MC.K9.G_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/X1.S26.X1.NF54.MC.K9.G_SPMR_FE_comp.bdg
+
+sort -k1,1 -k2,2n  ./singleSamplePeaks/X1.S26.X1.NF54.MC.K9.G_ppois_comp.bdg > ./singleSamplePeaks/X1.S26.X1.NF54.MC.K9.GP_ppois_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/X1.S26.X1.NF54.MC.K9.GP_ppois_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/X1.S26.X1.NF54.MC.K9.G_ppois.bw
+sort -k1,1 -k2,2n  ./singleSamplePeaks/SPMR/X1.S26.X1.NF54.MC.K9.G_SPMR_FE_comp.bdg > ./singleSamplePeaks/SPMR/X1.S26.X1.NF54.MC.K9.G_SPMR_FE_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/SPMR/X1.S26.X1.NF54.MC.K9.G_SPMR_FE_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/SPMR/X1.S26.X1.NF54.MC.K9.G_SPMR_FE_comp.bw
+
+#sample 3 H3K4
+macs2 callpeak -t ./bams/X1.S27.X1.NF54.MC.K4.G.bam -c ./bams/X1.S25.X1.NF54.MC.IgG.G.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks -n X1.S27.X1.NF54.MC.K4.G 
+macs2 bdgcmp -t ./singleSamplePeaks/X1.S27.X1.NF54.MC.K4.G_treat_pileup.bdg -c ./singleSamplePeaks/X1.S27.X1.NF54.MC.K4.G_control_lambda.bdg -m ppois -o ./singleSamplePeaks/X1.S27.X1.NF54.MC.K4.G.ppois_comp.bdg
+macs2 callpeak -t ./bams/X1.S27.X1.NF54.MC.K4.G.bam -c ./bams/X1.S25.X1.NF54.MC.IgG.G.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n X1.S27.X1.NF54.MC.K4.G_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/X1.S27.X1.NF54.MC.K4.G_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/X1.S27.X1.NF54.MC.K4.G_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/X1.S27.X1.NF54.MC.K4.G_SPMR_FE_comp.bdg
+
+sort -k1,1 -k2,2n  ./singleSamplePeaks/X1.S27.X1.NF54.MC.K4.G_ppois_comp.bdg > ./singleSamplePeaks/X1.S27.X1.NF54.MC.K4.GP_ppois_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/X1.S27.X1.NF54.MC.K4.GP_ppois_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/X1.S27.X1.NF54.MC.K4.G_ppois.bw
+sort -k1,1 -k2,2n  ./singleSamplePeaks/SPMR/X1.S27.X1.NF54.MC.K4.G_SPMR_FE_comp.bdg > ./singleSamplePeaks/SPMR/X1.S27.X1.NF54.MC.K4.G_SPMR_FE_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/SPMR/X1.S27.X1.NF54.MC.K4.G_SPMR_FE_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/SPMR/X1.S27.X1.NF54.MC.K4.G_SPMR_FE_comp.bw
+
+#sample 4 H3K9
+macs2 callpeak -t ./bams/X1.S2.X1.NF54.MC.K9.A.bam -c ./bams/X1.S1.X1.NF54.MC.IgG.A.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks -n X1.S2.X1.NF54.MC.K9.A 
+macs2 bdgcmp -t ./singleSamplePeaks/X1.S2.X1.NF54.MC.K9.A_treat_pileup.bdg -c ./singleSamplePeaks/X1.S2.X1.NF54.MC.K9.A_control_lambda.bdg -m ppois -o ./singleSamplePeaks/X1.S2.X1.NF54.MC.K9.A_ppois_comp.bdg
+macs2 callpeak -t ./bams/X1.S2.X1.NF54.MC.K9.A.bam -c ./bams/X1.S1.X1.NF54.MC.IgG.A.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n X1.S2.X1.NF54.MC.K9.A_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/X1.S2.X1.NF54.MC.K9.A_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/X1.S2.X1.NF54.MC.K9.A_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/X1.S2.X1.NF54.MC.K9.A_SPMR_FE_comp.bdg
+
+sort -k1,1 -k2,2n  ./singleSamplePeaks/X1.S2.X1.NF54.MC.K9.A_ppois_comp.bdg > ./singleSamplePeaks/X1.S2.X1.NF54.MC.K9.AP_ppois_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/X1.S2.X1.NF54.MC.K9.AP_ppois_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/X1.S2.X1.NF54.MC.K9.A_ppois.bw
+sort -k1,1 -k2,2n  ./singleSamplePeaks/SPMR/X1.S2.X1.NF54.MC.K9.A_SPMR_FE_comp.bdg > ./singleSamplePeaks/SPMR/X1.S2.X1.NF54.MC.K9.A_SPMR_FE_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/SPMR/X1.S2.X1.NF54.MC.K9.A_SPMR_FE_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/SPMR/X1.S2.X1.NF54.MC.K9.A_SPMR_FE_comp.bw
+
+
+#########
+
+# Downsampling
+
+samtools view -hb --subsample 0.25 ./bams/X1.S26.X1.NF54.MC.K9.G.bam > ./bams/S26_K9_0.25.bam &
+samtools view -hb --subsample 0.0625 ./bams/X1.S26.X1.NF54.MC.K9.G.bam > ./bamsS26_K9_0.0625.bam &
+samtools view -hb --subsample 0.015625 ./bams/X1.S26.X1.NF54.MC.K9.G.bam > ./bamsS26_K9_0.015625.bam &
+
+samtools view -hb --subsample 0.25 ./bams/X1.S27.X1.NF54.MC.K4.G.bam > ./bams/S27_K4_0.25.bam &
+samtools view -hb --subsample 0.0625 ./bams/X1.S27.X1.NF54.MC.K4.G.bam > ./bams/S27_K4_0.0625.bam &
+samtools view -hb --subsample 0.015625 ./bams/X1.S27.X1.NF54.MC.K4.G.bam > ./bams/S27_K4_0.015625.bam &
+ 
+ 
+ 
+macs2 callpeak -t ./bams/S26_K9_0.25.bam -c ./bams/X1.S25.X1.NF54.MC.IgG.G.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n S26_K9_0.25_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/S26_K9_0.25_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/S26_K9_0.25_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/S26_K9_0.25_SPMR.comp.bdg
+
+macs2 callpeak -t ./bams/S26_K9_0.25.bam -c ./bams/X1.S25.X1.NF54.MC.IgG.G.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n S26_K9_0.0625_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/S26_K9_0.0625_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/S26_K9_0.0625_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/S26_K9_0.0625_SPMR.comp.bdg
+
+macs2 callpeak -t ./bams/S26_K9_0.015625.bam -c ./bams/X1.S25.X1.NF54.MC.IgG.G.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n S26_K9_0.015625_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/S26_K9_0.015625_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/S26_K9_0.015625_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/S26_K9_0.015625_SPMR.comp.bdg
+
+ 
+### 
+
+# H3K9
+fasterq-dump --concatenate-reads SRR4444647 &
+fasterq-dump --concatenate-reads SRR4444639 &
+trimmomatic SE -threads 15 ./SRR4444647.fastq  ./paired.reads/H3K9me3_ChIP.trimmed.fq.gz  SLIDINGWINDOW:4:15 LEADING:3 TRAILING:3 MINLEN:30 &
+trimmomatic SE -threads 15 ./SRR4444639.fastq ./paired.reads/H3K9me3_control.trimmed.fq.gz SLIDINGWINDOW:4:15 LEADING:3 TRAILING:3 MINLEN:30 &
+
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:B\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/H3K9me3_ChIP.trimmed.fq.gz | samtools view -hb - | samtools sort --threads 5 -n -O BAM -o ./bams/H3K9me3_ChIP.bam &
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:B\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/H3K9me3_control.trimmed.fq.gz | samtools view -hb - | samtools sort --threads 5 -n -O BAM -o ./bams/H3K9me3_control.bam &
+
+macs2 callpeak -t ./bams/H3K9me3_ChIP.bam -c ./bams/H3K9me3_control.bam -f BAM -B -g 2.3e7 -q 0.05 --nomodel --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks -n H3K9me3_ChIP 
+macs2 bdgcmp -t ./singleSamplePeaks/H3K9me3_ChIP_treat_pileup.bdg -c ./singleSamplePeaks/H3K9me3_ChIP_control_lambda.bdg -m ppois -o ./singleSamplePeaks/H3K9me3_ChIP_ppois_comp.bdg
+sort -k1,1 -k2,2n  ./singleSamplePeaks/H3K9me3_ChIP_ppois_comp.bdg > ./singleSamplePeaks/H3K9me3_ChIP_ppois_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/H3K9me3_ChIP_ppois_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/H3K9me3_ChIP_ppois.bw
+
+macs2 callpeak -t ./bams/H3K9me3_ChIP.bam -c ./bams/H3K9me3_control.bam -f BAM -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n H3K9me3_ChIP_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/H3K9me3_ChIP_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/H3K9me3_ChIP_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/H3K9me3_ChIP_SPMR_FE_comp.bdg
+sort -k1,1 -k2,2n  ./singleSamplePeaks/SPMR/H3K9me3_ChIP_SPMR_FE_comp.bdg > ./singleSamplePeaks/SPMR/H3K9me3_ChIP_SPMR_FE_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/SPMR/H3K9me3_ChIP_SPMR_FE_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/SPMR/H3K9me3_ChIP_SPMR_FE_comp.bw
+
+#H3K4
+fasterq-dump --concatenate-reads SRR065659 &
+fasterq-dump --concatenate-reads SRR065664 &
+trimmomatic SE -threads 15 ./SRR065659.fastq ./paired.reads/H3K4me3_ChIP.trimmed.fq.gz ILLUMINACLIP:/home/chantal/miniconda3/share/trimmomatic-0.39-2/adapters/TruSeq2-SE.fa:2:30:10 SLIDINGWINDOW:4:15 LEADING:3 TRAILING:3 MINLEN:20&
+trimmomatic SE -threads 15 ./SRR065664.fastq ./paired.reads/H3K4me3_control.trimmed.fq.gz ILLUMINACLIP:/home/chantal/miniconda3/share/trimmomatic-0.39-2/adapters/TruSeq2-SE.fa:2:30:10 SLIDINGWINDOW:4:15 LEADING:3 TRAILING:3 MINLEN:20&
+
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:C\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/H3K4me3_ChIP.trimmed.fq.gz| samtools view -hb - | samtools sort --threads 5 -n -O BAM -o ./bams/H3K4me3_ChIP.bam &
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:D\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/H3K4me3_control.trimmed.fq.gz  | samtools view -hb - | samtools sort --threads 5 -n -O BAM -o ./bams/H3K4me3_control.bam &
+
+macs2 callpeak -t ./bams/H3K4me3_ChIP.bam -c ./bams/H3K4me3_control.bam -f BAM -B -g 2.3e7 -q 0.05 --nomodel --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks -n H3K4me3_ChIP 
+macs2 bdgcmp -t ./singleSamplePeaks/H3K4me3_ChIP_treat_pileup.bdg -c ./singleSamplePeaks/H3K4me3_ChIP_control_lambda.bdg -m ppois -o ./singleSamplePeaks/H3K4me3_ChIP_ppois_comp.bdg
+sort -k1,1 -k2,2n  ./singleSamplePeaks/H3K4me3_ChIP_ppois_comp.bdg > ./singleSamplePeaks/H3K4me3_ChIP_ppois_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/H3K4me3_ChIP_ppois_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/H3K4me3_ChIP_ppois.bw
+
+macs2 callpeak -t ./bams/H3K4me3_ChIP.bam -c ./bams/H3K4me3_control.bam -f BAM -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n H3K4me3_ChIP_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/H3K4me3_ChIP_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/H3K4me3_ChIP_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/H3K4me3_ChIP_SPMR_FE_comp.bdg
+sort -k1,1 -k2,2n  ./singleSamplePeaks/SPMR/H3K4me3_ChIP_SPMR_FE_comp.bdg > ./singleSamplePeaks/SPMR/H3K4me3_ChIP_SPMR_FE_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/SPMR/H3K4me3_ChIP_SPMR_FE_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/SPMR/H3K4me3_ChIP_SPMR_FE_comp.bw
+
+
+# HP1
+fasterq-dump --concatenate-reads SRR5935737 &
+fasterq-dump --concatenate-reads SRR5935738 &
+trimmomatic SE -threads 15 ./SRR5935737.fastq ./paired.reads/HP1_ChIP.trimmed.fq.gz ILLUMINACLIP:/home/chantal/miniconda3/share/trimmomatic-0.39-2/adapters/TruSeq3-SE.fa:2:30:10 SLIDINGWINDOW:4:15 LEADING:3 TRAILING:3 MINLEN:20 &
+trimmomatic SE -threads 15 ./SRR5935738.fastq ./paired.reads/HP1_control.trimmed.fq.gz ILLUMINACLIP:/home/chantal/miniconda3/share/trimmomatic-0.39-2/adapters/TruSeq3-SE.fa:2:30:10 SLIDINGWINDOW:4:15 LEADING:3 TRAILING:3 MINLEN:20&
+
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:E\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/HP1_ChIP.trimmed.fq.gz | samtools view -hb - | samtools sort --threads 5 -n -O BAM -o ./bams/HP1_ChIP.bam &
+bwa mem -M -t 10 -R "@RG\tID:kafsacklab\tSM:F\tPL:Illumina\tLB:lib\tPU:unit" ./genome/PlasmoDB-58_Pfalciparum3D7_Genome.fasta ./paired.reads/HP1_control.trimmed.fq.gz  | samtools view -hb - | samtools sort --threads 5 -n -O BAM -o ./bams/HP1_control.bam &
+
+macs2 callpeak -t ./bams/HP1_ChIP.bam -c ./bams/HP1_control.bam -f BAM -B -g 2.3e7 -q 0.05 --nomodel --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks -n HP1_ChIP 
+macs2 bdgcmp -t ./singleSamplePeaks/HP1_ChIP_treat_pileup.bdg -c ./singleSamplePeaks/HP1_ChIP_control_lambda.bdg -m ppois -o ./singleSamplePeaks/HP1_ChIP_ppois_comp.bdg
+sort -k1,1 -k2,2n  ./singleSamplePeaks/HP1_ChIP_ppois_comp.bdg > ./singleSamplePeaks/HP1_ChIP_ppois_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/HP1_ChIP_ppois_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/HP1_ChIP_ppois.bw
+
+macs2 callpeak -t ./bams/HP1_ChIP.bam -c ./bams/HP1_control.bam -f BAM -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n HP1_ChIP_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/HP1_ChIP_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/HP1_ChIP_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/HP1_ChIP_SPMR_FE_comp.bdg
+sort -k1,1 -k2,2n  ./singleSamplePeaks/SPMR/HP1_ChIP_SPMR_FE_comp.bdg > ./singleSamplePeaks/SPMR/HP1_ChIP_SPMR_FE_comp.sorted.bdg
+bedGraphToBigWig ./singleSamplePeaks/SPMR/HP1_ChIP_SPMR_FE_comp.sorted.bdg ./genome/chrom.sizes ./singleSamplePeaks/SPMR/HP1_ChIP_SPMR_FE_comp.bw
+
+#####
+fastqc -t 30 ./paired.reads/*control.trimmed.fq.gz
+fastqc -t 30 ./paired.reads/*ChIP.trimmed.fq.gz
+
+rm SRR*fastq
+rm ./singleSamplePeaks/SPMR/*bdg
+rm ./singleSamplePeaks/SPMR/*bedgraph
