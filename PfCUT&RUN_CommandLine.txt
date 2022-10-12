@@ -153,13 +153,12 @@ bedGraphToBigWig ./singleSamplePeaks/SPMR/X1.S2.X1.NF54.MC.K9.A_SPMR_FE_comp.sor
 # Downsampling
 
 samtools view -hb --subsample 0.25 ./bams/X1.S26.X1.NF54.MC.K9.G.bam > ./bams/S26_K9_0.25.bam &
-samtools view -hb --subsample 0.0625 ./bams/X1.S26.X1.NF54.MC.K9.G.bam > ./bamsS26_K9_0.0625.bam &
-samtools view -hb --subsample 0.015625 ./bams/X1.S26.X1.NF54.MC.K9.G.bam > ./bamsS26_K9_0.015625.bam &
+samtools view -hb --subsample 0.0625 ./bams/X1.S26.X1.NF54.MC.K9.G.bam > ./bams/S26_K9_0.0625.bam &
+samtools view -hb --subsample 0.015625 ./bams/X1.S26.X1.NF54.MC.K9.G.bam > ./bams/S26_K9_0.015625.bam &
 
 samtools view -hb --subsample 0.25 ./bams/X1.S27.X1.NF54.MC.K4.G.bam > ./bams/S27_K4_0.25.bam &
 samtools view -hb --subsample 0.0625 ./bams/X1.S27.X1.NF54.MC.K4.G.bam > ./bams/S27_K4_0.0625.bam &
 samtools view -hb --subsample 0.015625 ./bams/X1.S27.X1.NF54.MC.K4.G.bam > ./bams/S27_K4_0.015625.bam &
- 
  
  
 macs2 callpeak -t ./bams/S26_K9_0.25.bam -c ./bams/X1.S25.X1.NF54.MC.IgG.G.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n S26_K9_0.25_SPMR
@@ -170,6 +169,15 @@ macs2 bdgcmp -t ./singleSamplePeaks/SPMR/S26_K9_0.0625_SPMR_treat_pileup.bdg -c 
 
 macs2 callpeak -t ./bams/S26_K9_0.015625.bam -c ./bams/X1.S25.X1.NF54.MC.IgG.G.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n S26_K9_0.015625_SPMR
 macs2 bdgcmp -t ./singleSamplePeaks/SPMR/S26_K9_0.015625_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/S26_K9_0.015625_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/S26_K9_0.015625_SPMR.comp.bdg
+
+macs2 callpeak -t ./bams/S27_K4_0.25.bam -c ./bams/X1.S25.X1.NF54.MC.IgG.G.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n S27_K4_0.25_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/S27_K4_0.25_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/S27_K4_0.25_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/S27_K4_0.25_SPMR.comp.bdg
+
+macs2 callpeak -t ./bams/S27_K4_0.25.bam -c ./bams/X1.S25.X1.NF54.MC.IgG.G.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n S27_K4_0.0625_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/S27_K4_0.0625_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/S27_K4_0.0625_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/S27_K4_0.0625_SPMR.comp.bdg
+
+macs2 callpeak -t ./bams/S27_K4_0.015625.bam -c ./bams/X1.S25.X1.NF54.MC.IgG.G.bam -f BAMPE -B -g 2.3e7 -q 0.05 --nomodel --SPMR --broad --keep-dup auto --max-gap 500 --outdir ./singleSamplePeaks/SPMR -n S27_K4_0.015625_SPMR
+macs2 bdgcmp -t ./singleSamplePeaks/SPMR/S27_K4_0.015625_SPMR_treat_pileup.bdg -c ./singleSamplePeaks/SPMR/S27_K4_0.015625_SPMR_control_lambda.bdg -m FE -o ./singleSamplePeaks/SPMR/S27_K4_0.015625_SPMR.comp.bdg
 
  
 ### 
